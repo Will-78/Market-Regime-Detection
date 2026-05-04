@@ -4,12 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Market Regime Detection</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Market Regime Detection</h1>
-    <p>This is a simple web page for the Market Regime Detection project.</p>
-    <p>It will display the results of the HDBSCAN clustering algorithm applied to the market data.</p>
-    <p>The data will be visualized in a scatter plot, with each point representing a time period and its color indicating the detected market regime.</p>
-    <p>Each cluster in the scatter plot represents a different market regime.</p>
+
+    <h2>Pre-Processing of the data</h2>
+    <img src="images/PreprocessingOutput.png" alt="Pre-Processing of the data">
+
+    <h2>Results</h2>
+        <h3>K-Means Clustering</h3>
+            <p>The results of the K-Means clustering algorithm are displayed below.</p>
+            <img src="images/KMeansMarketReturns.png" alt="K-Means Clustering Results">
+            <img src="images/KMeansVolatilityMarkets.png" alt="K-Means Clustering Results 2">
+
+
+        <h3>Gaussian Mixture Model</h3>
+            <p>The results of the Gaussian Mixture Model are displayed below.</p>
+            <img src="images/GmmreturnsWMarketRegimes.png" alt="Gaussian Mixture Model Results">
+            <img src="images/GmmValueOutput.png" alt="Gaussian Mixture Model Results 2">
+            <img src="images/GmmValueOutput.png" alt="Gaussian Mixture Model Results 3">
+
+        <h3>HDBSCAN</h3>
+            <p>The results of the HDBSCAN clustering algorithm are displayed below.</p>
+            <img src="images/HDBSCANMarketReturns.png" alt="HDBSCAN Results">
+            <img src="images/HDBSCANPCAPlot.png" alt="HDBSCAN Results 2">
+            <img src="images/HDBSCANValueOutputs.png" alt="HDBSCAN Results 3">
+
 </body>
 </html>
