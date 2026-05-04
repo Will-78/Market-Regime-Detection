@@ -9,8 +9,13 @@
 <body>
     <h1>Market Regime Detection</h1>
 
+    <h2>How to Use This Tool</h2>
+        <p>When using this tool within the terminal you can select which method to use for the analysis. Provide the necessary input data for time series given in the required format.</p>
+        <p>Output values from the end of the files will be displayed in the terminal. Specifcally future expected returns accross known market regimes following the analysis in the next day.</p>
+
     <h2>Pre-Processing of the data</h2>
     <img src="images/PreprocessingOutput.png" alt="Pre-Processing of the data">
+    <p>This preprocessed data is what we will use for the subsequent analysis. With key features extracting relevant information such as average returns and volatility.</p>
 
     <h2>Results</h2>
         <h3>K-Means Clustering</h3>
@@ -24,12 +29,15 @@
             <img src="images/GmmreturnsWMarketRegimes.png" alt="Gaussian Mixture Model Results">
             <img src="images/GmmValueOutput.png" alt="Gaussian Mixture Model Results 2">
             <img src="images/GmmValueOutput.png" alt="Gaussian Mixture Model Results 3">
+            <p>The Gaussian Mixture Model is a probabilistic model that assumes all the data points are generated from a mixture of several Gaussian distributions. Additoinally identified the more likely market regimes based on the data as can be observed in the results.</p>
 
         <h3>HDBSCAN</h3>
             <p>The results of the HDBSCAN clustering algorithm are displayed below.</p>
             <img src="images/HDBSCANMarketReturns.png" alt="HDBSCAN Results">
             <img src="images/HDBSCANPCAPlot.png" alt="HDBSCAN Results 2">
             <img src="images/HDBSCANValueOutputs.png" alt="HDBSCAN Results 3">
+            <p>The HDBSCAN algorithm is a density-based clustering algorithm that can find clusters of varying shapes and sizes. It is particularly useful for identifying outliers and noise in the data.</p>
+            <p>By utilzing this algoritm the noise detected is within major shifts in the data such as the crisis of 2020 within the graphs.</p>
 
 </body>
 </html>
