@@ -1,35 +1,548 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Market Regime Detection</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Market Regime Detection</h1>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Clustering Market Regimes</h1>
+      <p class="authors">William Barnett &amp; Preston Smith</p>
+    </header>
 
-    <h2>Pre-Processing of the data</h2>
-    <img src="images/PreprocessingOutput.png" alt="Pre-Processing of the data">
+    <nav>
+      <div class="nav-links">
+        <a href="#motivation">Motivation</a>
+        <a href="#dataflow">Dataflow &amp; Preprocessing</a>
+        <a href="#results">Results</a>
+        <a href="#isolation-forest">Isolation Forest</a>
+        <a href="#takeaways">Takeaways</a>
+        <a href="#running">How to Run</a>
+      </div>
+      <a
+        href="https://github.com/Will-78/Market-Regime-Detection"
+        target="_blank"
+        class="nav-github"
+        >GitHub Repo</a
+      >
+    </nav>
 
-    <h2>Results</h2>
+    <main>
+      <section id="motivation">
+        <h2>Motivation</h2>
+        <p>
+          The main goal of this project is to use unsupervised machine learning
+          algorithms to detect market regimes in the stock market, periods of
+          time with distinct trends. The most well-known examples are Bull and
+          Bear markets, where the market has a sustained period of continual
+          growth or decline, respectively.
+        </p>
+        <div class="card-row">
+          <div class="card">
+            <h3>Datasets</h3>
+            <ul>
+              <li>
+                <span class="ticker">SPY</span> &mdash; Large Stocks (S&amp;P
+                500)
+              </li>
+              <li>
+                <span class="ticker">IWM</span> &mdash; Small Stocks (Russell
+                2000)
+              </li>
+              <li><span class="ticker">QQQ</span> &mdash; Tech Stocks</li>
+              <li><span class="ticker">TLT</span> &mdash; Treasury Bonds</li>
+              <li><span class="ticker">GLD</span> &mdash; Gold</li>
+              <li><span class="ticker">XLE</span> &mdash; Energy</li>
+              <li><span class="ticker">XLF</span> &mdash; Financials</li>
+              <li><span class="ticker">XLK</span> &mdash; Tech Sector</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Models</h3>
+            <ul>
+              <li>K-Means Clustering</li>
+              <li>Gaussian Mixture Model (GMM)</li>
+              <li>HDBSCAN</li>
+              <li>Isolation Forest <span class="badge">Bonus</span></li>
+            </ul>
+            <h3>Scope</h3>
+            <p>
+              Capture and compare each model's output against known market
+              regimes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="dataflow">
+        <h2>Dataflow &amp; Preprocessing</h2>
+        <p>
+          Data is pulled via the <code>yfinance</code> Python package. The same
+          preprocessing pipeline is applied across every model, ensuring fair
+          comparison. Seven features are calculated per trading day using a
+          20-day rolling window, then standardized via
+          <code>StandardScaler</code>.
+        </p>
+        <div class="pipeline-row">
+          <img
+            class="pipeline-img"
+            src="images/pipeline.png"
+            alt="Dataflow Diagram"
+          />
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>Volatility</h4>
+              <p>Rolling std of returns: how much prices are changing.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Avg Return</h4>
+              <p>Rolling mean return: overall day-to-day direction.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Dispersion</h4>
+              <p>Cross-asset std: how differently individual markets move.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Correlation</h4>
+              <p>
+                Rolling cross-asset correlation: assets moving together or
+                apart.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h4>Equity Bond Spread</h4>
+              <p>Equity returns minus TLT: risk-on vs. risk-off sentiment.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Drawdown</h4>
+              <p>Distance from rolling high: stress indicator.</p>
+            </div>
+            <div class="feature-card">
+              <h4>Vol Change</h4>
+              <p>Day-over-day volatility change: regime transitions.</p>
+            </div>
+          </div>
+        </div>
+        <img
+          src="images/PreprocessingOutput.png"
+          alt="Preprocessed feature output"
+        />
+      </section>
+
+      <section id="results">
+        <h2>Results</h2>
+
         <h3>K-Means Clustering</h3>
-            <p>The results of the K-Means clustering algorithm are displayed below.</p>
-            <img src="images/KMeansMarketReturns.png" alt="K-Means Clustering Results">
-            <img src="images/KMeansVolatilityMarkets.png" alt="K-Means Clustering Results 2">
-
+        <p>
+          K-Means partitions market days into k distinct clusters based on
+          feature similarity. The elbow method was used to select the optimal k.
+          The table below shows mean feature values per regime, and future
+          return shows what each regime predicts for the next day.
+        </p>
+        <div class="results-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Regime</th>
+                <th>Volatility</th>
+                <th>Avg Return</th>
+                <th>Dispersion</th>
+                <th>Correlation</th>
+                <th>EQ Bond Spread</th>
+                <th>Drawdown</th>
+                <th>Vol Change</th>
+                <th>Future Return</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0</td>
+                <td>-0.24</td>
+                <td>0.34</td>
+                <td>-0.14</td>
+                <td>-0.77</td>
+                <td>0.09</td>
+                <td>0.34</td>
+                <td>-0.03</td>
+                <td>0.32</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>-0.31</td>
+                <td>-0.05</td>
+                <td>-0.36</td>
+                <td>0.71</td>
+                <td>0.04</td>
+                <td>0.19</td>
+                <td>-0.09</td>
+                <td>-0.03</td>
+              </tr>
+              <tr class="highlight">
+                <td>2</td>
+                <td>3.47</td>
+                <td>-4.31</td>
+                <td>4.47</td>
+                <td>0.04</td>
+                <td>-0.76</td>
+                <td>-4.95</td>
+                <td>3.16</td>
+                <td>-4.14</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>2.07</td>
+                <td>1.75</td>
+                <td>0.63</td>
+                <td>0.15</td>
+                <td>0.45</td>
+                <td>0.39</td>
+                <td>-2.30</td>
+                <td>1.71</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>0.79</td>
+                <td>-1.23</td>
+                <td>0.85</td>
+                <td>0.93</td>
+                <td>-0.57</td>
+                <td>-1.41</td>
+                <td>0.67</td>
+                <td>-1.22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <img
+          src="images/KMeansMarketReturns.png"
+          alt="K-Means Average Return by Regime"
+        />
+        <img
+          src="images/KMeansVolatilityMarkets.png"
+          alt="K-Means Volatility by Regime"
+        />
 
         <h3>Gaussian Mixture Model</h3>
-            <p>The results of the Gaussian Mixture Model are displayed below.</p>
-            <img src="images/GmmreturnsWMarketRegimes.png" alt="Gaussian Mixture Model Results">
-            <img src="images/GmmValueOutput.png" alt="Gaussian Mixture Model Results 2">
-            <img src="images/GmmValueOutput.png" alt="Gaussian Mixture Model Results 3">
+        <p>
+          GMM models each regime as a Gaussian distribution, allowing for soft
+          probabilistic assignments. BIC was used to select the optimal number
+          of components. GMM was found to be the most effective model overall.
+        </p>
+        <div class="results-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Regime</th>
+                <th>Volatility</th>
+                <th>Avg Return</th>
+                <th>Dispersion</th>
+                <th>Correlation</th>
+                <th>EQ Bond Spread</th>
+                <th>Drawdown</th>
+                <th>Vol Change</th>
+                <th>Future Return</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0</td>
+                <td>-0.21</td>
+                <td>0.36</td>
+                <td>-0.28</td>
+                <td>-0.46</td>
+                <td>0.31</td>
+                <td>0.38</td>
+                <td>-0.12</td>
+                <td>0.34</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>0.24</td>
+                <td>-0.34</td>
+                <td>0.42</td>
+                <td>0.47</td>
+                <td>-0.22</td>
+                <td>-0.54</td>
+                <td>0.03</td>
+                <td>-0.32</td>
+              </tr>
+              <tr class="highlight">
+                <td>2</td>
+                <td>3.00</td>
+                <td>-1.61</td>
+                <td>2.54</td>
+                <td>0.19</td>
+                <td>0.32</td>
+                <td>-2.29</td>
+                <td>0.91</td>
+                <td>-1.48</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>-0.47</td>
+                <td>0.03</td>
+                <td>-0.40</td>
+                <td>0.32</td>
+                <td>-0.38</td>
+                <td>0.29</td>
+                <td>-0.03</td>
+                <td>0.02</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <img
+          src="images/GmmreturnsWMarketRegimes.png"
+          alt="GMM Returns by Regime"
+        />
+        <img src="images/GmmPCAPlot.png" alt="GMM PCA Plot" />
 
         <h3>HDBSCAN</h3>
-            <p>The results of the HDBSCAN clustering algorithm are displayed below.</p>
-            <img src="images/HDBSCANMarketReturns.png" alt="HDBSCAN Results">
-            <img src="images/HDBSCANPCAPlot.png" alt="HDBSCAN Results 2">
-            <img src="images/HDBSCANValueOutputs.png" alt="HDBSCAN Results 3">
+        <p>
+          HDBSCAN is a density-based algorithm that does not require specifying
+          the number of clusters upfront. Points that don't belong to any
+          cluster are labeled <code>-1</code> (noise). Hyperparameters were
+          tuned via grid search to maximize the silhouette score.
+        </p>
+        <div class="results-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Regime</th>
+                <th>Volatility</th>
+                <th>Avg Return</th>
+                <th>Dispersion</th>
+                <th>Correlation</th>
+                <th>EQ Bond Spread</th>
+                <th>Drawdown</th>
+                <th>Vol Change</th>
+                <th>Future Return</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="highlight">
+                <td>-1 (noise)</td>
+                <td>3.25</td>
+                <td>-2.22</td>
+                <td>3.61</td>
+                <td>0.17</td>
+                <td>-0.06</td>
+                <td>-3.07</td>
+                <td>1.69</td>
+                <td>-2.25</td>
+              </tr>
+              <tr class="highlight">
+                <td>0</td>
+                <td>4.85</td>
+                <td>-2.42</td>
+                <td>0.92</td>
+                <td>0.61</td>
+                <td>-0.20</td>
+                <td>-3.03</td>
+                <td>-0.03</td>
+                <td>-2.01</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>-0.17</td>
+                <td>0.11</td>
+                <td>-0.14</td>
+                <td>-0.01</td>
+                <td>0.00</td>
+                <td>0.14</td>
+                <td>-0.06</td>
+                <td>0.10</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <img
+          src="images/HDBSCANMarketReturns.png"
+          alt="HDBSCAN Average Returns"
+        />
+        <img src="images/HDBSCANPCAPlot.png" alt="HDBSCAN PCA Plot" />
+      </section>
 
-</body>
+      <section id="isolation-forest">
+        <h2>Bonus: Isolation Forest</h2>
+        <p>
+          Isolation Forest is an anomaly detection algorithm that identifies
+          outlier days by measuring how easily a data point can be isolated from
+          the rest. Unlike the clustering models above, it does not assign
+          regime labels, instead it flags days as
+          <strong>normal</strong> (1) or <strong>anomalous</strong> (-1).
+        </p>
+        <p>
+          This acts as a validation layer on top of the clustering results. Days
+          flagged as anomalies correspond closely to the extreme crisis regimes
+          identified by KMeans, GMM, and HDBSCAN, most notably the
+          <strong>March 2020 COVID crash</strong>.
+        </p>
+        <div class="card-row">
+          <div class="card">
+            <h4>How it works</h4>
+            <p>
+              The algorithm builds a forest of random isolation trees. Points
+              that require fewer splits to isolate are considered anomalous,
+              they sit far from the dense normal cluster in feature space.
+            </p>
+          </div>
+          <div class="card">
+            <h4>Key parameter: contamination</h4>
+            <p>
+              Controls what fraction of data is expected to be anomalous. A grid
+              search over contamination (0.01-0.15) and n_estimators (100-300)
+              was used to find the best silhouette score.
+            </p>
+          </div>
+        </div>
+        <img
+          src="images/IsolationForestPlot.png"
+          alt="Isolation Forest Anomaly Score Over Time"
+        />
+        <p class="caption">
+          The anomaly score over time. Values below the red dashed line (0) are
+          flagged as anomalies. The sharp dip in early 2020 corresponds to the
+          COVID crash.
+        </p>
+        <img
+          src="images/IsolationForestPCAPlot.png"
+          alt="Isolation Forest PCA Scatter"
+        />
+        <p class="caption">
+          PCA scatter of all trading days. Red points are anomalies; they sit
+          far left along the Market Stress axis, isolated from the dense normal
+          cluster.
+        </p>
+      </section>
+
+      <section id="running">
+        <h2>Running the Project</h2>
+
+        <h3>Prerequisites</h3>
+        <p>
+          Make sure you have Python 3 installed, then install all dependencies:
+        </p>
+        <pre><code>pip install -r requirements.txt</code></pre>
+        <div class="dep-grid">
+          <div class="dep-card">
+            <span class="ticker">hdbscan</span
+            ><span class="dep-version">0.8.42</span>
+          </div>
+          <div class="dep-card">
+            <span class="ticker">matplotlib</span
+            ><span class="dep-version">3.10.9</span>
+          </div>
+          <div class="dep-card">
+            <span class="ticker">numpy</span
+            ><span class="dep-version">2.4.4</span>
+          </div>
+          <div class="dep-card">
+            <span class="ticker">pandas</span
+            ><span class="dep-version">3.0.2</span>
+          </div>
+          <div class="dep-card">
+            <span class="ticker">scikit-learn</span
+            ><span class="dep-version">1.8.0</span>
+          </div>
+          <div class="dep-card">
+            <span class="ticker">yfinance</span
+            ><span class="dep-version">1.3.0</span>
+          </div>
+        </div>
+
+        <h3>Launching the Notebooks</h3>
+        <p>Start Jupyter from the project directory:</p>
+        <pre><code>jupyter notebook</code></pre>
+        <p>Then open and run any of the four notebooks:</p>
+        <div class="card-row">
+          <div class="card">
+            <h4>kmeans_clustering.ipynb</h4>
+            <p>
+              K-Means clustering with elbow method. Prompts you to choose k
+              after viewing the inertia plot.
+            </p>
+          </div>
+          <div class="card">
+            <h4>gmm.ipynb</h4>
+            <p>Gaussian Mixture Model with BIC-based model selection.</p>
+          </div>
+          <div class="card">
+            <h4>hdbscan.ipynb</h4>
+            <p>
+              Density-based clustering with automated hyperparameter grid
+              search.
+            </p>
+          </div>
+          <div class="card">
+            <h4>Isolation Forest</h4>
+            <p>
+              Isolation Forest is automatically run at the end of each notebook
+              above, no separate file needed. The last cells in each notebook
+              will run the anomaly detection and display the PCA scatter and
+              anomaly score plots.
+            </p>
+          </div>
+        </div>
+        <p>
+          Each notebook is self-contained, data is downloaded automatically via
+          <code>yfinance</code> when you run it.
+        </p>
+      </section>
+
+      <section id="takeaways">
+        <h2>Takeaways</h2>
+        <div class="card-row">
+          <div class="card">
+            <h3>What all models agreed on</h3>
+            <ul>
+              <li>
+                A <strong>normal</strong> regime (low volatility, positive
+                returns)
+              </li>
+              <li>
+                A <strong>negative / risk-off</strong> regime (elevated
+                volatility, negative returns)
+              </li>
+              <li>
+                An <strong>extreme crisis</strong> regime (COVID crash, massive
+                volatility spike)
+              </li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Model comparison</h3>
+            <ul>
+              <li><strong>GMM</strong>, most effective overall</li>
+              <li>
+                <strong>HDBSCAN</strong>, best at handling noise and irregular
+                shapes
+              </li>
+              <li><strong>K-Means</strong>, simple and interpretable</li>
+              <li>
+                <strong>Isolation Forest</strong>, best for validating extreme
+                events
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p>
+          Regimes are tangible and consistent across models, they are a real
+          property of the market, not an artifact of any single algorithm.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <a
+          href="https://github.com/Will-78/Market-Regime-Detection"
+          target="_blank"
+          >GitHub Repository</a
+        >
+      </p>
+    </footer>
+  </body>
 </html>

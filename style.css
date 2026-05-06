@@ -1,38 +1,344 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+:root {
+  --navy: #0a1628;
+  --navy-light: #112240;
+  --orange: #f5a623;
+  --teal: #64ffda;
+  --text: #ccd6f6;
+  --text-muted: #8892b0;
+  --border: #1e3a5f;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
+  background-color: var(--navy);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
+/* ── Header ── */
+header {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg, #0a1628 0%, #112240 100%);
+  border-bottom: 1px solid var(--border);
 }
+
+header h1 {
+  font-size: 2.6rem;
+  color: #fff;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.authors {
+  color: var(--orange);
+  font-size: 1rem;
+}
+
+/* ── Nav ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background-color: var(--navy-light);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  flex: 1;
+}
+
+nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+nav a:hover {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+nav .nav-github {
+  margin-left: auto;
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+nav .nav-github:hover {
+  background: var(--orange);
+  color: var(--navy);
+}
+
+/* ── Main content ── */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+section {
+  margin-bottom: 70px;
+}
+
 h2 {
-    margin-top: 40px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 5px;
+  font-size: 1.7rem;
+  color: var(--orange);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
+
 h3 {
-    margin-top: 25px;
+  font-size: 1.2rem;
+  color: var(--teal);
+  margin: 28px 0 10px;
+}
+
+h4 {
+  font-size: 1rem;
+  color: var(--orange);
+  margin-bottom: 8px;
 }
 
 p {
-    line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 14px;
 }
 
+code {
+  background: var(--navy-light);
+  color: var(--teal);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.88rem;
+}
+
+/* ── Cards ── */
+.card-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.card {
+  flex: 1;
+  min-width: 220px;
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.card ul {
+  padding-left: 18px;
+  color: var(--text);
+}
+
+.card ul li {
+  margin-bottom: 6px;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.ticker {
+  color: var(--teal);
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.badge {
+  background: var(--orange);
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 10px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* ── Pipeline + feature grid side by side ── */
+.pipeline-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin: 20px 0;
+}
+
+.pipeline-img {
+  width: 420px;
+  min-width: 340px;
+  flex-shrink: 0;
+  margin: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+/* ── Feature grid ── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.feature-card {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--orange);
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.feature-card h4 {
+  margin-bottom: 6px;
+}
+
+.feature-card p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Code blocks ── */
+pre {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  color: var(--teal);
+  padding: 0;
+  font-size: 0.95rem;
+}
+
+/* ── Dependency grid ── */
+.dep-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0 28px;
+}
+
+.dep-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+.dep-version {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+/* ── Tables ── */
+.results-table-wrapper {
+  overflow-x: auto;
+  margin: 16px 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+thead tr {
+  background: var(--navy-light);
+}
+
+th {
+  color: var(--orange);
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr.highlight td {
+  background: rgba(245, 166, 35, 0.07);
+  color: #fff;
+}
+
+/* ── Images ── */
 img {
-    width: 100%;
-    max-width: 800px;
-    display: block;
-    margin: 15px auto;
-    border-radius: 6px;
+  width: 100%;
+  max-width: 860px;
+  display: block;
+  margin: 16px auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.caption {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: -8px;
+  margin-bottom: 20px;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
 }
